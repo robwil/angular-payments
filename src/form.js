@@ -49,6 +49,8 @@ angular.module('angularPayments')
 
       form.bind('submit', function() {
 
+        scope.submitted = true;
+
         expMonthUsed = scope.expMonth ? true : false;
         expYearUsed = scope.expYear ? true : false;
 
@@ -58,18 +60,16 @@ angular.module('angularPayments')
           scope.expYear = exp.year
         }
 
-        var button = form.find('button');
-        button.prop('disabled', true);
+        scope.submitting = true;
 
-        if(form.hasClass('ng-valid')) {
-          
+        if(scope.form.$valid) {
 
           $window.Stripe.createToken(_getDataToSend(scope), function() {
             var args = arguments;
             scope.$apply(function() {
               scope[attr.stripeForm].apply(scope, args);
             });
-            button.prop('disabled', false);
+            scope.submitting = false;
 
           });
 
@@ -77,7 +77,7 @@ angular.module('angularPayments')
           scope.$apply(function() {
             scope[attr.stripeForm].apply(scope, [400, {error: 'Invalid form submitted.'}]);
           });
-          button.prop('disabled', false);
+          scope.submitting = false;
         }
 
         scope.expiryMonth = expMonthUsed ? scope.expMonth : null;
