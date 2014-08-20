@@ -69,7 +69,7 @@ angular.module('angularPayments')
 
         if(scope.form.$valid) {
 
-          $window.Stripe.createToken(_getDataToSend(scope.giving), function() {
+          $window.Stripe.createToken(_getDataToSend(scope), function() {
             var args = arguments;
             scope.$apply(function() {
               scope[attr.stripeForm].apply(scope, args);
